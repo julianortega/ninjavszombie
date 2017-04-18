@@ -157,4 +157,11 @@ public class Player extends Sprite {
         body.createFixture(fixtureDef).setUserData("head");
     }
 
+    public void jump(){
+        if ( currentState != State.JUMPING ) {
+            body.applyLinearImpulse(new Vector2(0, 6), body.getWorldCenter(), true);
+            currentState = State.JUMPING;
+        }
+    }
+
 }

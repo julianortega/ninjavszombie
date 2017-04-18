@@ -131,8 +131,7 @@ public class PlayScreen implements Screen {
     public void handleInput(float dt){
         // controles para teclado
         if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE) && player.currentState != Player.State.JUMPING && player.body.getLinearVelocity().y < 2) {
-            player.body.applyLinearImpulse(new Vector2(0, 6), player.body.getWorldCenter(), true);
-            System.out.println(player.body.getLinearVelocity().y);
+            player.jump();
             jumpSound.play();
         }
         if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 7)
@@ -144,7 +143,7 @@ public class PlayScreen implements Screen {
 
         // controles para movil
         if (controller.isUpPressed() && player.currentState != Player.State.JUMPING ) {
-            player.body.applyLinearImpulse(new Vector2(0, 6), player.body.getWorldCenter(), true); //true - will this impulse wake object.
+            player.jump();
             jumpSound.play();
         }
         if (controller.isRightPressed() && player.body.getLinearVelocity().x <= 7)
@@ -162,8 +161,24 @@ public class PlayScreen implements Screen {
 
         player.update(dt);
         enemyOne.update(dt);
+        //System.out.println("Player: "+player.body.getPosition().x);
+        //System.out.println("Enemy: " + enemyOne.getX());
+        System.out.println("Velocidad enemigo: " + enemyOne.body.getLinearVelocity().x);
+        if(player.body.getPosition().x-enemyOne.getX()<8&&player.body.getPosition().x-enemyOne.getX()>-8){
+            System.out.println("Detectado!");
+            if (player.body.getPosition().x-enemyOne.body.getPosition().x>0){
+                enemyOne.flip(false, false);
+                if(enemyOne.body.getLinearVelocity().x<4) {
+                    enemyOne.body.applyLinearImpulse(0.1f, 0, 0, 0, true);
 
-
+                }
+            } else{
+                enemyOne.flip(true, false);
+                if(enemyOne.body.getLinearVelocity().x>-4) {
+                    enemyOne.body.applyLinearImpulse(-0.1f, 0, 0, 0, true);
+                }
+            }
+        }
         gamecam.position.x =player.body.getPosition().x;
         //gamecam.position.x = BigDecimal.valueOf(player.body.getPosition().x).setScale(3,BigDecimal.ROUND_HALF_UP).floatValue();
         gamecam.position.y = 13;
@@ -185,7 +200,7 @@ public class PlayScreen implements Screen {
         renderer.render();
 
         // render de Box2DDebugLines
-        b2dr.render(world, gamecam.combined);
+        //b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
