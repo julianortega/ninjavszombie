@@ -1,0 +1,75 @@
+ninja_jump.png
+size: 1810, 966
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Jump_
+  rotate: false
+  xy: 0, 0
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 0
+Jump_
+  rotate: false
+  xy: 362, 0
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 1
+Jump_
+  rotate: false
+  xy: 724, 0
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 2
+Jump_
+  rotate: false
+  xy: 1086, 0
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 3
+Jump_
+  rotate: false
+  xy: 1448, 0
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 4
+Jump_
+  rotate: false
+  xy: 0, 483
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 5
+Jump_
+  rotate: false
+  xy: 362, 483
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 6
+Jump_
+  rotate: false
+  xy: 724, 483
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 7
+Jump_
+  rotate: false
+  xy: 1086, 483
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 8
+Jump_
+  rotate: false
+  xy: 1448, 483
+  size: 362, 483
+  orig: 362, 483
+  offset: 0, 0
+  index: 9

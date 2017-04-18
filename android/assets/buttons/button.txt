@@ -1,0 +1,19 @@
+button.png
+size: 480, 120
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+button-down
+  rotate: false
+  xy: 0, 0
+  size: 240, 120
+  orig: 240, 120
+  offset: 0, 0
+  index: -1
+button-up
+  rotate: false
+  xy: 240, 0
+  size: 240, 120
+  orig: 240, 120
+  offset: 0, 0
+  index: -1

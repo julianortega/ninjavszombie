@@ -1,0 +1,12 @@
+ninja_idle.png
+size: 362, 569
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Idle_
+  rotate: false
+  xy: 65, 65
+  size: 232, 439
+  orig: 232, 439
+  offset: 0, 0
+  index: 0

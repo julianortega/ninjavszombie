@@ -1,0 +1,12 @@
+zombie_walk.png
+size: 1720, 1557
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+zombie_walk
+  rotate: false
+  xy: 0, 0
+  size: 1720, 1557
+  orig: 1720, 1557
+  offset: 0, 0
+  index: -1
