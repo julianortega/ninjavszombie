@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myproject.game.Scenes.Hud;
 import com.myproject.game.MainGame;
-import com.myproject.game.Sprites.EnemyOne;
+import com.myproject.game.Sprites.Zombie;
 import com.myproject.game.Sprites.Player;
 import com.myproject.game.Tools.B2WorldCreator;
 import com.myproject.game.Tools.Controller;
@@ -27,10 +27,7 @@ import com.myproject.game.Tools.Parallax.ParallaxBackground;
 import com.myproject.game.Tools.Parallax.ParallaxLayer;
 import com.myproject.game.Tools.WorldContactListener;
 
-import java.math.BigDecimal;
 import java.util.Random;
-
-import sun.applet.Main;
 
 /**
  * Created by Brutal on 26/01/2017.
@@ -61,7 +58,7 @@ public class PlayScreen implements Screen {
 
     // Sprites
     private Player player;
-    private EnemyOne enemyOne;
+    private Zombie[] zombies;
 
     // Musica
     private Music music;
@@ -100,8 +97,16 @@ public class PlayScreen implements Screen {
         new B2WorldCreator(this);
 
         player = new Player(this);
-        enemyOne = new EnemyOne(this, player.body.getPosition().x+1, player.body.getPosition().y+1);
-        System.out.println(enemyOne.body.getPosition());
+        zombies = new Zombie[8];
+        zombies[0] = new Zombie(this, player.body.getPosition().x + 6, player.body.getPosition().y);
+        zombies[1] = new Zombie(this, player.body.getPosition().x + 20, player.body.getPosition().y + 10);
+        zombies[2] = new Zombie(this, player.body.getPosition().x + 30, player.body.getPosition().y + 10);
+        zombies[3] = new Zombie(this, player.body.getPosition().x + 40, player.body.getPosition().y + 10);
+        zombies[4] = new Zombie(this, player.body.getPosition().x + 45, player.body.getPosition().y + 10);
+        zombies[5] = new Zombie(this, player.body.getPosition().x + 50, player.body.getPosition().y + 10);
+        zombies[6] = new Zombie(this, player.body.getPosition().x + 55, player.body.getPosition().y + 10);
+        zombies[7] = new Zombie(this, player.body.getPosition().x + 60, player.body.getPosition().y + 10);
+
 
         world.setContactListener(new WorldContactListener());
         // MUSIC
@@ -160,22 +165,28 @@ public class PlayScreen implements Screen {
         world.step(dt, 6, 2);
 
         player.update(dt);
-        enemyOne.update(dt);
-        //System.out.println("Player: "+player.body.getPosition().x);
-        //System.out.println("Enemy: " + enemyOne.getX());
-        System.out.println("Velocidad enemigo: " + enemyOne.body.getLinearVelocity().x);
-        if(player.body.getPosition().x-enemyOne.getX()<8&&player.body.getPosition().x-enemyOne.getX()>-8){
-            System.out.println("Detectado!");
-            if (player.body.getPosition().x-enemyOne.body.getPosition().x>0){
-                enemyOne.flip(false, false);
-                if(enemyOne.body.getLinearVelocity().x<4) {
-                    enemyOne.body.applyLinearImpulse(0.1f, 0, 0, 0, true);
 
-                }
-            } else{
-                enemyOne.flip(true, false);
-                if(enemyOne.body.getLinearVelocity().x>-4) {
-                    enemyOne.body.applyLinearImpulse(-0.1f, 0, 0, 0, true);
+        System.out.println("Player: "+player.body.getPosition());
+        //System.out.println("Enemy: " + zombies[i.getX());
+
+        if(player.body.getPosition().y<6) {
+            game.setScreen(new GameOverScreen(game));
+        }
+        for(int i = 0; i < zombies.length; i++) {
+            zombies[i].update(dt);
+            if (player.body.getPosition().x - zombies[i].getX() < 8 && player.body.getPosition().x - zombies[i].getX() > -8) {
+                System.out.println("Detectado!");
+                if (player.body.getPosition().x - zombies[i].body.getPosition().x > 0) {
+                    zombies[i].flip(false, false);
+                    if (zombies[i].body.getLinearVelocity().x < 4) {
+                        zombies[i].body.applyLinearImpulse(0.1f, 0, 0, 0, true);
+
+                    }
+                } else {
+                    zombies[i].flip(true, false);
+                    if (zombies[i].body.getLinearVelocity().x > -4) {
+                        zombies[i].body.applyLinearImpulse(-0.1f, 0, 0, 0, true);
+                    }
                 }
             }
         }
@@ -205,7 +216,9 @@ public class PlayScreen implements Screen {
         game.batch.setProjectionMatrix(gamecam.combined);
         game.batch.begin();
         player.draw(game.batch);
-        enemyOne.draw(game.batch);
+        for(int i = 0; i < zombies.length; i++) {
+            zombies[i].draw(game.batch);
+        }
         game.batch.end();
 
         // dibuja la camara del hud

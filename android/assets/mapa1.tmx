@@ -8,7 +8,7 @@
  </tileset>
  <layer name="background" width="100" height="25">
   <data encoding="base64" compression="zlib">
-   eJzt0zEKACEMBMCIrf7Rp/nUO7CyFAQFZyAEtgosiQAAAAAAgDUpouex2+lb2N9H+acu5Mz8x130AQAAb/kAhCsERw==
+   eJztyKENAAAIwDAOgP/fBYfGIdpkZhEAAAAAAAArpzp8AAAA+KIBCeUAMw==
   </data>
  </layer>
  <layer name="water" width="100" height="25">
@@ -18,7 +18,7 @@
  </layer>
  <layer name="ground" width="100" height="25">
   <data encoding="base64" compression="zlib">
-   eJztlQsOgjAQRIsEhAgk6gU5mkfhaG6llc1a/p+CzEsmsaXidqZblQIAAAAAAAAAAAAAnIR0IV19FwI+FKSQFPsuxAP2LO7pPPrMY05vJhO/x7F739N59JlHRgpI+YC1tK7iY123rLkto7b5vjxs72zJkDzupAfpuUlFbkIxduUxlr48AqMtWas/5t4nsh985OGDpfKQ/rv8kr1P91Slfc+E90r9+n+2PFLSTTV35hB1+e/yS/Z+11k4ex5T1OU/fa4Kx7l3/faUPPT753qo32H3ktb1vGiudEk/05rq1VAtmQf3/2h57EVHzWOJ++rf8ohYf6e1FB9HpsfbpNe48siNT/Z/Xo6VqTutn5WjgzD8Wx5LiecY1zl+53VucsznQjY3VtFK+zl6HlCjNypFNT4=
+   eJztlo0OgiAURjGnxSqf0UfrUXy0ICDv7sBfFNHvbN8W2Azu4bKEAAAAAAAAAAAAAACUh8pN5Z56IeBHo1Kq1KkXkgB3Fo90HnP1oWu5toZu70fafy4+CiE6Otbr5msOOQrNj/lwvbMnufgo2djnYy5jPgqbPdnKx9r7hPdDCh8piOWD199XL977Q//teP2v5kOqPEV/Z07JUP199eK9P3QWru5jSYbqrz53DbtzQr+9xId+/9oa6ne4vUizno+aa33Rz3SW1mpqYvqg9c/Nx1GSq48Y99XZfFSkv6WJoOPK9ngo+js+H29bp5f1ycfCrluaZ+1sEZaz+YgV6rE2Hv/z2hsf07mSzM1NtdF+cveB9PkCl58ylA==
   </data>
  </layer>
  <objectgroup name="solid">
@@ -26,7 +26,6 @@
   <object id="98" x="2304" y="2176" width="256" height="256"/>
   <object id="99" x="2816" y="2048" width="256" height="384"/>
   <object id="100" x="3456" y="2176" width="128" height="256"/>
-  <object id="101" x="3968" y="1664" width="384" height="256"/>
   <object id="102" x="3968" y="2176" width="384" height="256"/>
   <object id="103" x="4864" y="2048" width="128" height="384"/>
   <object id="104" x="5376" y="1792" width="128" height="640"/>
@@ -36,21 +35,5 @@
   <object id="108" x="8064" y="1536" width="512" height="896"/>
   <object id="128" x="0" y="1408" width="384" height="896"/>
   <object id="129" x="9088" y="1792" width="256" height="256"/>
-  <object id="144" x="1157.33" y="1954.67" width="370.667" height="49.3333"/>
-  <object id="146" x="1226.67" y="2028" width="229.333" height="17.3333"/>
- </objectgroup>
- <objectgroup name="fluid">
-  <object id="109" x="2046.44" y="2367.35" width="269.978" height="19.7984"/>
-  <object id="110" x="2555.8" y="2363.75" width="269.978" height="17.9986"/>
-  <object id="111" x="3057.96" y="2244.96" width="428.366" height="16.1987"/>
-  <object id="112" x="3574.51" y="2235.96" width="415.767" height="23.3981"/>
-  <object id="113" x="4335.85" y="2225.16" width="590.353" height="26.9978"/>
-  <object id="114" x="4976.6" y="2232.36" width="455.364" height="17.9986"/>
-  <object id="115" x="5491.36" y="2232.36" width="424.766" height="26.9978"/>
-  <object id="116" x="6137.51" y="1978.58" width="412.167" height="34.1973"/>
-  <object id="117" x="6774.66" y="1980.38" width="534.557" height="30.5976"/>
-  <object id="118" x="7545" y="1978.58" width="550.756" height="28.7977"/>
-  <object id="119" x="8565.51" y="1987.58" width="550.756" height="23.3981"/>
-  <object id="136" x="9344" y="2048" width="384"/>
  </objectgroup>
 </map>

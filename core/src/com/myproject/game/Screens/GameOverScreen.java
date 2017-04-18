@@ -38,6 +38,7 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
 
         Label gameOverLabel = new Label("TE HAN MATADO", font);
+        gameOverLabel.scaleBy(20);
         Label playAgainLabel = new Label("Reintentar", font);
 
         table.add(gameOverLabel).expandX();

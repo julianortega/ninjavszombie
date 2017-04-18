@@ -44,12 +44,6 @@ public class B2WorldCreator {
             body.createFixture(fixtureDef);
         }
 
-        // water
-        for(MapObject object : map.getLayers().get(4).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-
-            new Water(screen, rect);
-        }
 
         // tuberias
       /*  for(MapObject object : map.getLayers().get(3).getObjects().getByType(RectangleMapObject.class)) {
