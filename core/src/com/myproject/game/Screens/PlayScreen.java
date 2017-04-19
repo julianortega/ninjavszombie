@@ -67,6 +67,7 @@ public class PlayScreen implements Screen {
     private int frames;
     private float time;
     private float fps;
+    private boolean paused;
 
     public PlayScreen(MainGame game) {
         frames = 0;
@@ -98,22 +99,26 @@ public class PlayScreen implements Screen {
 
         player = new Player(this);
         zombies = new Zombie[8];
-        zombies[0] = new Zombie(this, player.body.getPosition().x + 6, player.body.getPosition().y);
-        zombies[1] = new Zombie(this, player.body.getPosition().x + 20, player.body.getPosition().y + 10);
+        zombies[0] = new Zombie(this, player.body.getPosition().x + 8, player.body.getPosition().y);
+        zombies[1] = new Zombie(this, player.body.getPosition().x + 20, player.body.getPosition().y + 10); // POSICION PERFECTA
         zombies[2] = new Zombie(this, player.body.getPosition().x + 30, player.body.getPosition().y + 10);
         zombies[3] = new Zombie(this, player.body.getPosition().x + 40, player.body.getPosition().y + 10);
         zombies[4] = new Zombie(this, player.body.getPosition().x + 45, player.body.getPosition().y + 10);
         zombies[5] = new Zombie(this, player.body.getPosition().x + 50, player.body.getPosition().y + 10);
         zombies[6] = new Zombie(this, player.body.getPosition().x + 55, player.body.getPosition().y + 10);
         zombies[7] = new Zombie(this, player.body.getPosition().x + 60, player.body.getPosition().y + 10);
+        /*for(int i = 0; i < zombies.length; i++) {
+            zombies[i] = new Zombie(this, player.body.getPosition().x + r.nextInt(200)+10, player.body.getPosition().y+r.nextInt(18)+1);
+
+        }*/
 
 
         world.setContactListener(new WorldContactListener());
         // MUSIC
-        music = MainGame.manager.get("audio/music/music1.ogg", Music.class);
+        music = MainGame.manager.get("audio/music/music.mp3", Music.class);
         music.setLooping(true);
-        music.setVolume(0.2f);
-        //music.play();
+        music.setVolume(0.3f);
+        music.play();
 
         // SOUNDS
         jumpSound = MainGame.manager.get("audio/sounds/jump1.ogg", Sound.class);
@@ -143,7 +148,9 @@ public class PlayScreen implements Screen {
             player.body.applyLinearImpulse(new Vector2(0.3f, 0), player.body.getWorldCenter(), true);
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -7)
             player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
-
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+            paused ^= true;
+        }
 
 
         // controles para movil
@@ -158,15 +165,14 @@ public class PlayScreen implements Screen {
     }
 
     public void update(float dt){
-        // button input
-        handleInput(dt);
+
 
         // update world 60 times per second
         world.step(dt, 6, 2);
 
         player.update(dt);
 
-        System.out.println("Player: "+player.body.getPosition());
+        //System.out.println("Player: "+player.body.getPosition());
         //System.out.println("Enemy: " + zombies[i.getX());
 
         if(player.body.getPosition().y<6) {
@@ -175,7 +181,6 @@ public class PlayScreen implements Screen {
         for(int i = 0; i < zombies.length; i++) {
             zombies[i].update(dt);
             if (player.body.getPosition().x - zombies[i].getX() < 8 && player.body.getPosition().x - zombies[i].getX() > -8) {
-                System.out.println("Detectado!");
                 if (player.body.getPosition().x - zombies[i].body.getPosition().x > 0) {
                     zombies[i].flip(false, false);
                     if (zombies[i].body.getLinearVelocity().x < 4) {
@@ -202,34 +207,37 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        update(delta);
+        // button input
+        handleInput(delta);
+        if(!paused) {
+            update(delta);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            rbg.render(delta);
+            // render del mapa
+            renderer.render();
 
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        rbg.render(delta);
-        // render del mapa
-        renderer.render();
+            // render de Box2DDebugLines
+            //b2dr.render(world, gamecam.combined);
 
-        // render de Box2DDebugLines
-        //b2dr.render(world, gamecam.combined);
+            game.batch.setProjectionMatrix(gamecam.combined);
+            game.batch.begin();
+            player.draw(game.batch);
+            for (int i = 0; i < zombies.length; i++) {
+                zombies[i].draw(game.batch);
+            }
+            game.batch.end();
 
-        game.batch.setProjectionMatrix(gamecam.combined);
-        game.batch.begin();
-        player.draw(game.batch);
-        for(int i = 0; i < zombies.length; i++) {
-            zombies[i].draw(game.batch);
+            // dibuja la camara del hud
+            hud.setFps(Gdx.graphics.getFramesPerSecond());
+            hud.update(delta);
+            game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+            hud.stage.draw();
+
+            // solo se muestran controles en pantalla si se ejecuta en android
+            if (Gdx.app.getType() == Application.ApplicationType.Android)
+                controller.draw();
         }
-        game.batch.end();
-
-        // dibuja la camara del hud
-        hud.setFps(Gdx.graphics.getFramesPerSecond());
-        hud.update(delta);
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-        hud.stage.draw();
-
-        // solo se muestran controles en pantalla si se ejecuta en android
-        if (Gdx.app.getType() == Application.ApplicationType.Android)
-            controller.draw();
     }
 
     @Override

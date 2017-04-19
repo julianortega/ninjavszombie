@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Timer;
 import com.myproject.game.Screens.MenuScreen;
-import com.myproject.game.Screens.PlayScreen;
 import com.myproject.game.Screens.SplashScreen;
 
 import java.util.Random;
@@ -71,7 +70,7 @@ public class MainGame extends Game {
 
 		// MUSIC MANAGER
 		manager = new AssetManager();
-		manager.load("audio/music/music1.ogg", Music.class);
+		manager.load("audio/music/music.mp3", Music.class);
 		manager.load("audio/sounds/jump1.ogg", Sound.class);
 		//manager.load("audio/sounds/jump2.ogg", Sound.class);
 		//manager.load("audio/sounds/coin.wav", Sound.class);
