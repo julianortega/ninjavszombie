@@ -6,8 +6,10 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -15,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myproject.game.Scenes.Hud;
@@ -68,6 +71,7 @@ public class PlayScreen implements Screen {
     private float time;
     private float fps;
     private boolean paused;
+    private Label pause_label;
 
     public PlayScreen(MainGame game) {
         frames = 0;
@@ -126,6 +130,9 @@ public class PlayScreen implements Screen {
         rbg = new ParallaxBackground(new ParallaxLayer[]{
                 new ParallaxLayer(atlas[2].findRegion("bg"),new Vector2(),new Vector2(0, 0)),
         }, 1000, 750,new Vector2(0,0));
+
+        pause_label = new Label("PAUSE", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/consolas.fnt"), false), Color.WHITE));
+        pause_label.setScale(2);
 
     }
 
@@ -209,6 +216,11 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         // button input
         handleInput(delta);
+
+        // it deletes pause label when game is resumed
+        if(hud.stage.getActors().contains(pause_label, true))
+            hud.stage.getActors().pop();
+
         if(!paused) {
             update(delta);
             Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -232,12 +244,17 @@ public class PlayScreen implements Screen {
             hud.setFps(Gdx.graphics.getFramesPerSecond());
             hud.update(delta);
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
-            hud.stage.draw();
+
 
             // solo se muestran controles en pantalla si se ejecuta en android
             if (Gdx.app.getType() == Application.ApplicationType.Android)
                 controller.draw();
         }
+        else{
+            hud.stage.getActors().add(pause_label);
+        }
+        hud.stage.draw();
+
     }
 
     @Override
