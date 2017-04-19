@@ -10,9 +10,9 @@ public class DesktopLauncher {
 		new LwjglApplication(new MainGame(), config);
 
 		// WINDOW SIZE
-		config.width = 1920;
-		config.height = 1080;
+		config.width = 1280;
+		config.height = 720;
 		config.vSyncEnabled = true;
-		config.fullscreen = true;
+		config.fullscreen = false;
 	}
 }

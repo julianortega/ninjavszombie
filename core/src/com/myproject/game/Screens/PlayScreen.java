@@ -33,7 +33,7 @@ import com.myproject.game.Tools.WorldContactListener;
 import java.util.Random;
 
 /**
- * Created by Brutal on 26/01/2017.
+ * Created by usuario on 26/01/2017.
  */
 
 public class PlayScreen implements Screen {
@@ -132,7 +132,6 @@ public class PlayScreen implements Screen {
         }, 1000, 750,new Vector2(0,0));
 
         pause_label = new Label("PAUSE", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/consolas.fnt"), false), Color.WHITE));
-        pause_label.setScale(2);
 
     }
 

@@ -1,5 +1,6 @@
 package com.myproject.game.Screens;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -32,16 +33,18 @@ public class GameOverScreen implements Screen {
         viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((MainGame) game).batch);
 
-        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(), WHITE);
+        Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/consolas.fnt")), WHITE);
 
         Table table = new Table();
         table.center();
         table.setFillParent(true);
 
-        Label gameOverLabel = new Label("TE HAN MATADO", font);
-        gameOverLabel.scaleBy(20);
-        Label playAgainLabel = new Label("Reintentar", font);
+        Label gameOverLabel = new Label("GAME OVER", font);
+        Label playAgainLabel = new Label("Touch to try again", font);
+        if (Gdx.app.getType() != Application.ApplicationType.Android){
+            playAgainLabel.setText("\nPress SPACE to try again\n\n\n\nPress ESCAPE to go back Menu");
 
+        }
         table.add(gameOverLabel).expandX();
         table.row();
         table.add(playAgainLabel).expandX().padTop(10f);
@@ -59,6 +62,9 @@ public class GameOverScreen implements Screen {
         if(Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             game.setScreen(new PlayScreen((MainGame) game));
             dispose();
+        }
+        if(Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            game.setScreen(new MenuScreen((MainGame) game));
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

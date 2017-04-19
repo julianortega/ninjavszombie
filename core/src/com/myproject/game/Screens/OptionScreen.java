@@ -1,6 +1,5 @@
 package com.myproject.game.Screens;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -8,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -19,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myproject.game.MainGame;
 
-public class MenuScreen implements Screen {
+public class OptionScreen implements Screen {
     private MainGame game;
     private SpriteBatch batch;
     protected Stage stage;
@@ -28,8 +26,9 @@ public class MenuScreen implements Screen {
     protected Skin skin;
     private TextButton.TextButtonStyle textButtonStyle;
     private BitmapFont font;
-
-    public MenuScreen(MainGame game)
+    private TextButton fullscreenButton, backButton;
+    private String fsButtonText;
+    public OptionScreen(MainGame game)
     {
         this.game = game;
         skin = new Skin(game.buttonAtlas);
@@ -64,38 +63,34 @@ public class MenuScreen implements Screen {
         mainTable.center();
 
         //Create buttons
-        TextButton playButton = new TextButton("Play", textButtonStyle);
-        TextButton optionsButton = new TextButton("Options", textButtonStyle);
-        TextButton exitButton = new TextButton("Exit", textButtonStyle);
+        fullscreenButton = new TextButton("Fullscreen", textButtonStyle);
+        backButton = new TextButton("Back", textButtonStyle);
 
         //Add listeners to buttons
-        playButton.addListener(new ClickListener(){
+        fullscreenButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new PlayScreen(game));
+                if (Gdx.graphics.isFullscreen()){
+                    Gdx.graphics.setWindowedMode(1280,720);
+                    fullscreenButton.setText("Fullscreen");
+                }
+                else {
+                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                    fullscreenButton.setText("Windowed");
+                }
             }
         });
-        optionsButton.addListener(new ClickListener(){
+        backButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new OptionScreen(game));
-            }
-        });
-        exitButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.exit();
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MenuScreen(game));
             }
         });
 
         //Add buttons to table
-        mainTable.add(playButton);
+        mainTable.add(fullscreenButton);
         mainTable.row();
-        if (Gdx.app.getType() != Application.ApplicationType.Android) {
-            mainTable.add(optionsButton);
-            mainTable.row();
-        }
-        mainTable.add(exitButton);
+        mainTable.add(backButton);
 
         //Add table to stage
         stage.addActor(mainTable);

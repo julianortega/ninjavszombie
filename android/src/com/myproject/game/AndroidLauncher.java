@@ -32,4 +32,15 @@ public class AndroidLauncher extends AndroidApplication {
 						| View.SYSTEM_UI_FLAG_FULLSCREEN
 						| View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 	}
+
+	@Override
+	public void onWindowFocusChanged(boolean hasFocus) {
+		super.onWindowFocusChanged(hasFocus);
+		if (hasFocus) {
+			// In KITKAT (4.4) and next releases, hide the virtual buttons
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				hideVirtualButtons();
+			}
+		}
+	}
 }
