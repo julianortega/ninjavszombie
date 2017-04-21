@@ -15,8 +15,8 @@ import com.myproject.game.Screens.SplashScreen;
 import java.util.Random;
 
 public class MainGame extends Game {
-	public static final int V_WIDTH = 1920;
-	public static final int V_HEIGHT = 1080;
+	public static int V_WIDTH = 1920;
+	public static int V_HEIGHT = 1080;
 	public static final float PPM = 100;
 
 	public static final short GROUND_BIT = 1;

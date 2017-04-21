@@ -26,9 +26,10 @@ public class Hud implements Disposable{
     private float timeCount;
     private static Integer coins;
     private float fps;
+    private int distance;
 
     // Etiquetas que se muestran en el HUD
-    private static Label coinsLabel;
+    private Label distanceLabel;
     private Label countdownLabel;
     private Label fpsLabel;
 
@@ -51,13 +52,13 @@ public class Hud implements Disposable{
         fpsLabel.setFontScale(2);
         countdownLabel = new Label(String.format("%03d", worldTimer), labelStyle);
         countdownLabel.setFontScale(2);
-        coinsLabel = new Label(String.format("%02d", coins), labelStyle);
-        coinsLabel.setFontScale(2);
+        distanceLabel = new Label(String.format("%d", distance), labelStyle);
+        distanceLabel.setFontScale(2);
 
 
         table.add(fpsLabel).padTop(1).padLeft(1);
         table.add(countdownLabel).expandX().padTop(2);
-        table.add(coinsLabel).expandX().padTop(2);
+        table.add(distanceLabel).expandX().padTop(2);
 
         stage.addActor(table);
     }
@@ -65,6 +66,7 @@ public class Hud implements Disposable{
     public void update(float dt){
         timeCount += dt;
         fpsLabel.setText(String.format("%2.0f", fps));
+        distanceLabel.setText(String.format("%d", distance));
         if(timeCount >= 1){
             worldTimer++;
             countdownLabel.setText(String.format("%03d", worldTimer));
@@ -72,13 +74,12 @@ public class Hud implements Disposable{
         }
     }
 
-    public static void addCoin(){
-        coins++;
-        coinsLabel.setText(String.format("%02d", coins));
-    }
 
     public void setFps(float fps){
         this.fps = fps;
+    }
+    public void setDistance(int distance){
+        this.distance = distance;
     }
     @Override
     public void dispose() {

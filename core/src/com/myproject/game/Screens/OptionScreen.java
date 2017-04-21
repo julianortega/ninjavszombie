@@ -9,9 +9,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -26,8 +28,9 @@ public class OptionScreen implements Screen {
     protected Skin skin;
     private TextButton.TextButtonStyle textButtonStyle;
     private BitmapFont font;
-    private TextButton fullscreenButton, backButton;
-    private String fsButtonText;
+    private TextButton fullscreenButton, lowResButton, medResButton, highResButton, backButton;
+    private int windowWidth, windowHeight;
+
     public OptionScreen(MainGame game)
     {
         this.game = game;
@@ -64,20 +67,40 @@ public class OptionScreen implements Screen {
 
         //Create buttons
         fullscreenButton = new TextButton("Fullscreen", textButtonStyle);
+        lowResButton = new TextButton("Low", textButtonStyle);
+        medResButton = new TextButton("Medium", textButtonStyle);
+        highResButton = new TextButton("High", textButtonStyle);
         backButton = new TextButton("Back", textButtonStyle);
 
+        lowResButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                windowWidth = 800;
+                windowHeight = 600;
+                Gdx.graphics.setWindowedMode(windowWidth, windowHeight);
+            }
+        });
+        medResButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                windowWidth = 1280;
+                windowHeight = 720;
+                Gdx.graphics.setWindowedMode(windowWidth, windowHeight);
+            }
+        });
+        highResButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                windowWidth = 1920;
+                windowHeight = 1080;
+                Gdx.graphics.setWindowedMode(windowWidth, windowHeight);
+            }
+        });
         //Add listeners to buttons
         fullscreenButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Gdx.graphics.isFullscreen()){
-                    Gdx.graphics.setWindowedMode(1280,720);
-                    fullscreenButton.setText("Fullscreen");
-                }
-                else {
                     Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                    fullscreenButton.setText("Windowed");
-                }
             }
         });
         backButton.addListener(new ClickListener(){
@@ -90,6 +113,11 @@ public class OptionScreen implements Screen {
         //Add buttons to table
         mainTable.add(fullscreenButton);
         mainTable.row();
+        mainTable.add(lowResButton);
+        mainTable.add(medResButton);
+        mainTable.add(highResButton);
+        mainTable.row();
+
         mainTable.add(backButton);
 
         //Add table to stage

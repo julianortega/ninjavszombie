@@ -72,6 +72,7 @@ public class PlayScreen implements Screen {
     private float fps;
     private boolean paused;
     private Label pause_label;
+    private int distance;
 
     public PlayScreen(MainGame game) {
         frames = 0;
@@ -132,7 +133,7 @@ public class PlayScreen implements Screen {
         }, 1000, 750,new Vector2(0,0));
 
         pause_label = new Label("PAUSE", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/consolas.fnt"), false), Color.WHITE));
-
+        distance = (int)player.body.getPosition().x;
     }
 
     public TextureAtlas[] getAtlas(){
@@ -241,6 +242,10 @@ public class PlayScreen implements Screen {
 
             // dibuja la camara del hud
             hud.setFps(Gdx.graphics.getFramesPerSecond());
+            if(player.body.getPosition().x>distance) {
+                distance = (int)player.body.getPosition().x;
+                hud.setDistance(distance-10);
+            }
             hud.update(delta);
             game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
 
