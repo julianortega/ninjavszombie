@@ -12,7 +12,10 @@ public class DesktopLauncher {
 		// WINDOW SIZE
 		config.width = 1280;
 		config.height = 720;
-		config.vSyncEnabled = true;
+		config.vSyncEnabled = false;
+		//config.foregroundFPS = 60;
+		config.backgroundFPS = 30;
+		config.resizable = false;
 		config.fullscreen = false;
 	}
 }

@@ -25,7 +25,7 @@ public class Controller {
     public boolean leftPressed;
     public boolean rightPressed;
     public Image buttonUp;
-    public Image buttonDown;
+    //public Image buttonDown;
     public Image buttonLeft;
     public Image buttonRight;
     public OrthographicCamera camera;
@@ -40,7 +40,7 @@ public class Controller {
 
         //Buttons with images.
         buttonUp = new Image(new Texture("buttonup.png"));
-        buttonUp.setSize(160,160);
+        buttonUp.setSize(240,240);
         buttonUp.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -53,7 +53,7 @@ public class Controller {
                 upPressed = false;
             }
         });
-        buttonDown = new Image(new Texture("buttondown.png"));
+        /*buttonDown = new Image(new Texture("buttondown.png"));
         buttonDown.setSize(160,160);
         buttonDown.addListener(new InputListener() {
             @Override
@@ -66,9 +66,9 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 downPressed = false;
             }
-        });
+        });*/
         buttonLeft = new Image(new Texture("buttonleft.png"));
-        buttonLeft.setSize(160,160);
+        buttonLeft.setSize(200,200);
         buttonLeft.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -82,7 +82,7 @@ public class Controller {
             }
         });
         buttonRight = new Image(new Texture("buttonright.png"));
-        buttonRight.setSize(160,160);
+        buttonRight.setSize(200,200);
         buttonRight.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -100,12 +100,13 @@ public class Controller {
         sticksTable = new Table();
         sticksTable.left().bottom(); //Align to the left bottom.
 
-        sticksTable.row().pad(0, 0, 0, 0);
+        sticksTable.add().size(40,1);
         sticksTable.add(buttonLeft).size(buttonLeft.getWidth(), buttonLeft.getHeight());
+        sticksTable.add().size(30,1);
         sticksTable.add(buttonRight).size(buttonRight.getWidth(), buttonRight.getHeight());
-        sticksTable.add().size(stage.getWidth() - buttonUp.getWidth()*2 - buttonDown.getWidth()*2, 10);
+        sticksTable.add().size(Gdx.graphics.getWidth()-buttonLeft.getWidth()-buttonRight.getWidth()-buttonUp.getWidth()-70, 1);
         sticksTable.add(buttonUp).size(buttonUp.getWidth(), buttonUp.getHeight());
-        sticksTable.add(buttonDown).size(buttonDown.getWidth(), buttonDown.getHeight());
+        //sticksTable.add(buttonDown).size(buttonDown.getWidth(), buttonDown.getHeight());
 
 
 

@@ -63,7 +63,7 @@ public class GameOverScreen implements Screen {
             game.setScreen(new PlayScreen((MainGame) game));
             dispose();
         }
-        if(Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new MenuScreen((MainGame) game));
         }
         Gdx.gl.glClearColor(0, 0, 0, 1);
