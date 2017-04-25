@@ -70,6 +70,7 @@ public class PlayScreen implements Screen {
 
     private boolean paused;
     private Label pause_label;
+    private int distance;
 
     public PlayScreen(MainGame game) {
 
@@ -137,7 +138,7 @@ public class PlayScreen implements Screen {
         }, 1000, 750,new Vector2(0,0));
 
         pause_label = new Label("PAUSE", new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/consolas.fnt"), false), Color.WHITE));
-
+        distance = (int)player.body.getPosition().x;
     }
 
     public TextureAtlas[] getAtlas(){
@@ -227,6 +228,29 @@ public class PlayScreen implements Screen {
 
         if(!paused) {
             update(delta);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            rbg.render(delta);
+            // render del mapa
+            renderer.render();
+
+            // render de Box2DDebugLines
+            //b2dr.render(world, gamecam.combined);
+
+            game.batch.setProjectionMatrix(gamecam.combined);
+            game.batch.begin();
+            player.draw(game.batch);
+            for (int i = 0; i < zombies.length; i++) {
+                zombies[i].draw(game.batch);
+            }
+            game.batch.end();
+
+            // dibuja la camara del hud
+            hud.setFps(Gdx.graphics.getFramesPerSecond());
+            if(player.body.getPosition().x>distance) {
+                distance = (int)player.body.getPosition().x;
+                hud.setDistance(distance-10);
+            }
             hud.update(delta);
         }else{
             hud.stage.getActors().add(pause_label);

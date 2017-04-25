@@ -32,7 +32,7 @@ public class Coin extends InteractiveTileObject {
     public void onHeadHit() {
         if(isActive) {
             Gdx.app.log("Coin", "Collision");
-            Hud.addCoin();
+            //Hud.addCoin();
             getCell().setTile(tileSet.getTile(BLANK_COIN));
         }
         isActive = false;
