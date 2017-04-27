@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.myproject.game.MainGame;
 import com.myproject.game.Screens.PlayScreen;
+import com.myproject.game.Tools.AnimationCreator;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
@@ -37,37 +38,19 @@ public class Player extends Sprite {
     private boolean runningRight;
 
 
-    public Player(PlayScreen screen){
+
+    public Player(PlayScreen screen) {
+        AnimationCreator fc = new AnimationCreator(screen);
+
         this.world = screen.getWorld();
-        currentState = State.STANDING;
-        previousState = State.STANDING;
-        stateTimer = 0;
-        runningRight = true;
-
-        Array<TextureRegion> frames = new Array<TextureRegion>();
-        for(int i = 0; i < 5; i++)
-            frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_run"), i*363, 0, 363, 458));
-        for(int i = 0; i < 5; i++)
-            frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_run"), i*363, 458, 363, 458));
-        playerRun = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 5; i++)
-            frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_jump"), i*362, 0, 362, 483));
-        for(int i = 0; i < 5; i++)
-            frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_jump"), i*362, 483, 362, 483));
-        playerJump = new Animation(0.1f, frames);
-        frames.clear();
-
-        for(int i = 0; i < 3; i++)
-            frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_attack"), i*536, 0, 536, 495));
-        for(int i = 0; i < 3; i++)
-            frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_attack"), i*536, 495, 536, 495));
-        frames.add(new TextureRegion(screen.getAtlas()[0].findRegion("ninja_attack"), 0, 495*2, 536, 495));
-        playerAttack = new Animation(0.1f, frames);
-        frames.clear();
-
-        playerStand = new TextureRegion(screen.getAtlas()[0].findRegion("ninja_idle"), 0, 50, 360, 470);
+        this.currentState = State.STANDING;
+        this.previousState = State.STANDING;
+        this.stateTimer = 0;
+        this.runningRight = true;
+        this.playerRun = fc.createPlayerRunAnimation();
+        this.playerJump = fc.createPlayerJumpAnimation();
+        this.playerAttack = fc.createPlayerAttackAnimation();
+        this.playerStand = fc.createPlayerStandTexture();
 
         definePlayer();
         setBounds(0, 0, 140 / MainGame.PPM, 140 / MainGame.PPM);
