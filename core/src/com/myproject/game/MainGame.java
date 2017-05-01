@@ -22,8 +22,7 @@ public class MainGame extends Game {
 	public static final short GROUND_BIT = 1;
 	public static final short PLAYER_BIT = 2;
 	public static final short BRICK_BIT = 4;
-	public static final short COIN_BIT = 8;
-	public static final short DESTROYED_BIT = 16;
+	public static final short BULLET_BIT = 8;
 	public static final short OBJECT_BIT = 32;
 	public static final short ENEMY_BIT = 64;
 	public static final short ENEMY_HEAD_BIT = 128;
@@ -55,6 +54,7 @@ public class MainGame extends Game {
 		atlas[0].addRegion("ninja_jump", new Texture("ninja/ninja_jump.png"), 0, 0, 1810, 966);
 		atlas[0].addRegion("ninja_run", new Texture("ninja/ninja_run.png"), 0, 0, 1815, 916);
 		atlas[0].addRegion("ninja_attack", new Texture("ninja/ninja_attack.png"), 0, 0, 1608, 1980);
+		atlas[0].addRegion("kunai", new Texture("ninja/kunai.png"), 0, 0, 160, 32);
 
 		// ATLAS 2 - FEMALE PLAYER TODO
 
@@ -72,9 +72,6 @@ public class MainGame extends Game {
 		manager = new AssetManager();
 		manager.load("audio/music/music.mp3", Music.class);
 		manager.load("audio/sounds/jump1.ogg", Sound.class);
-		//manager.load("audio/sounds/jump2.ogg", Sound.class);
-		//manager.load("audio/sounds/coin.wav", Sound.class);
-		//manager.load("audio/sounds/break.wav", Sound.class);
 		manager.finishLoading();
 
 		//screen = new PlayScreen(this);

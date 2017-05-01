@@ -1,5 +1,6 @@
 package com.myproject.game.Sprites;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,17 +26,19 @@ import java.awt.geom.RectangularShape;
  */
 
 public class Player extends Sprite {
+
     public enum State { FALLING, JUMPING, STANDING, RUNNING, ATTACKING };
     public State currentState;
-    public State previousState;
+    private State previousState;
 
-    public World world;
+    private World world;
     public Body body;
     private TextureRegion playerStand;
     private Animation<TextureRegion> playerRun, playerJump, playerAttack;
     private float stateTimer;
     private boolean runningRight;
-
+    private int hp;
+    private Sound jumpSound;
 
     public Player(PlayScreen screen){
         this.world = screen.getWorld();
@@ -43,6 +46,7 @@ public class Player extends Sprite {
         previousState = State.STANDING;
         stateTimer = 0;
         runningRight = true;
+        hp = 3;
 
         Array<TextureRegion> frames = new Array<TextureRegion>();
         for(int i = 0; i < 5; i++)
@@ -72,6 +76,9 @@ public class Player extends Sprite {
         definePlayer();
         setBounds(0, 0, 140 / MainGame.PPM, 140 / MainGame.PPM);
         setRegion(playerStand);
+
+        // SOUNDS
+        jumpSound = MainGame.manager.get("audio/sounds/jump1.ogg", Sound.class);
     }
 
     public void update(float dt){
@@ -141,27 +148,34 @@ public class Player extends Sprite {
         fixtureDef.filter.categoryBits = MainGame.PLAYER_BIT;
         fixtureDef.filter.maskBits = MainGame.GROUND_BIT |
                 MainGame.BRICK_BIT |
-                MainGame.COIN_BIT |
+                MainGame.BULLET_BIT |
                 MainGame.ENEMY_BIT |
                 MainGame.OBJECT_BIT |
                 MainGame.ENEMY_HEAD_BIT;
 
         fixtureDef.shape = shape;
-        body.createFixture(fixtureDef);
-
-        EdgeShape head = new EdgeShape();
-        head.set(new Vector2(-2 / MainGame.PPM, 6 / MainGame.PPM), new Vector2(2 / MainGame.PPM, 6 / MainGame.PPM));
-        fixtureDef.shape = head;
-        fixtureDef.isSensor = true;
-
-        body.createFixture(fixtureDef).setUserData("head");
+        body.createFixture(fixtureDef).setUserData(this);
     }
 
     public void jump(){
         if ( currentState != State.JUMPING ) {
             body.applyLinearImpulse(new Vector2(0, 6), body.getWorldCenter(), true);
+            jumpSound.play();
             currentState = State.JUMPING;
         }
+    }
+
+    public void hit(){
+        hp--;
+        System.out.println("Tocado! Te quedan "+hp+" vidas!");
+    }
+
+    public boolean isDead(){
+        return hp<=0 || body.getPosition().y<6;
+    }
+
+    public int getHp(){
+        return hp;
     }
 
 }
