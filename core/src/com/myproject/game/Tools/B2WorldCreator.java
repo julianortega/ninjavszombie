@@ -11,9 +11,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.myproject.game.MainGame;
 import com.myproject.game.Screens.PlayScreen;
-import com.myproject.game.Sprites.Brick;
-import com.myproject.game.Sprites.Coin;
-import com.myproject.game.Sprites.Water;
 
 /**
  * Created by Brutal on 26/01/2017.

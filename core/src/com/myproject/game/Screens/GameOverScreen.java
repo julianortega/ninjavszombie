@@ -8,7 +8,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -25,13 +28,16 @@ import static com.badlogic.gdx.graphics.Color.*;
 public class GameOverScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
-
+    private Texture background;
+    private SpriteBatch batch;
     private Game game;
 
     public GameOverScreen(Game game){
         this.game = game;
         viewport = new FitViewport(MainGame.V_WIDTH, MainGame.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, ((MainGame) game).batch);
+        background = new Texture(Gdx.files.internal("gameover_background.png"));
+        batch = new SpriteBatch();
 
         Label.LabelStyle font = new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/consolas.fnt")), WHITE);
 
@@ -43,7 +49,6 @@ public class GameOverScreen implements Screen {
         Label playAgainLabel = new Label("Touch to try again", font);
         if (Gdx.app.getType() != Application.ApplicationType.Android){
             playAgainLabel.setText("\nPress SPACE to try again\n\n\n\nPress ESCAPE to go back Menu");
-
         }
         table.add(gameOverLabel).expandX();
         table.row();

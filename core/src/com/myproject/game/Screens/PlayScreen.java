@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,13 +14,16 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.myproject.game.Scenes.Hud;
 import com.myproject.game.MainGame;
+import com.myproject.game.Sprites.Bullet;
 import com.myproject.game.Sprites.Zombie;
 import com.myproject.game.Sprites.Player;
 import com.myproject.game.Tools.B2WorldCreator;
@@ -39,6 +41,7 @@ import java.util.Random;
 public class PlayScreen implements Screen {
     private MainGame game;
     private TextureAtlas[] atlas;
+    private WorldContactListener wcl;
 
     private OrthographicCamera gamecam;
     private Viewport gamePort;
@@ -64,24 +67,28 @@ public class PlayScreen implements Screen {
     private Zombie[] zombies;
     private int numZombies;
     private float[] zombie_spawns;
+    private Array<Bullet> bullets;
+
     // Musica
     private Music music;
-    private Sound jumpSound;
+
 
     private boolean paused;
     private Label pause_label;
     private int distance;
 
+    public static final long FIRE_RATE = 300000000L;
+    public long lastShot;
+
+
     public PlayScreen(MainGame game) {
-
-
         this.game = game;
         atlas = game.atlas;
 
         gamecam = new OrthographicCamera();
 
         gamePort = new FitViewport(MainGame.V_WIDTH / MainGame.PPM, MainGame.V_HEIGHT / MainGame.PPM, gamecam);
-
+        wcl = new WorldContactListener();
         hud = new Hud(game.batch);
 
         Random r = new Random();
@@ -103,6 +110,7 @@ public class PlayScreen implements Screen {
 
         numZombies = 10; // number of zombies that spawn
 
+        // define zombie spawns
         zombie_spawns = new float[numZombies];
         zombie_spawns[0] = 24.5f;
         zombie_spawns[1] = 30;
@@ -115,23 +123,18 @@ public class PlayScreen implements Screen {
         zombie_spawns[8] = 84;
         zombie_spawns[9] = 92;
 
-
-
-
         zombies = new Zombie[numZombies];
         for(int i = 0; i < numZombies; i++)
             zombies[i] = new Zombie(this, zombie_spawns[i], 12+i);
 
+        bullets = new Array<Bullet>();
 
-        world.setContactListener(new WorldContactListener());
+        world.setContactListener(wcl);
         // MUSIC
         music = MainGame.manager.get("audio/music/music.mp3", Music.class);
         music.setLooping(true);
         music.setVolume(0.3f);
         music.play();
-
-        // SOUNDS
-        jumpSound = MainGame.manager.get("audio/sounds/jump1.ogg", Sound.class);
 
         rbg = new ParallaxBackground(new ParallaxLayer[]{
                 new ParallaxLayer(atlas[2].findRegion("bg"),new Vector2(),new Vector2(0, 0)),
@@ -150,68 +153,80 @@ public class PlayScreen implements Screen {
 
     }
 
-    public void handleInput(float dt){
-        // controles para teclado
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && player.currentState != Player.State.JUMPING && player.body.getLinearVelocity().y < 2) {
-            player.jump();
-            jumpSound.play();
+    private void handleInput(float dt){
+        // keyboard input
+        if(!paused) {
+            if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+                player.jump();
+            if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 7)
+                player.body.applyLinearImpulse(new Vector2(0.3f, 0), player.body.getWorldCenter(), true);
+            if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -7)
+                player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
+            if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+                if(System.nanoTime() - lastShot >= FIRE_RATE) {
+                    bullets.add(new Bullet(this, player.body.getPosition().x, player.body.getPosition().y));
+                    lastShot = System.nanoTime();
+                }
+            }
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && player.body.getLinearVelocity().x <= 7)
-            player.body.applyLinearImpulse(new Vector2(0.3f, 0), player.body.getWorldCenter(), true);
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -7)
-            player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
             paused ^= true;
-        }
 
 
-        // controles para movil
-        if (controller.isUpPressed() && player.currentState != Player.State.JUMPING ) {
+        // android input
+        if (controller.isUpPressed())
             player.jump();
-            jumpSound.play();
-        }
         if (controller.isRightPressed() && player.body.getLinearVelocity().x <= 7)
             player.body.applyLinearImpulse(new Vector2(0.3f, 0), player.body.getWorldCenter(), true);
         if (controller.isLeftPressed() && player.body.getLinearVelocity().x >= -7)
             player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
-
-
     }
 
-    public void update(float dt){
+    private void update(float dt){
         // update world 60 times per second
         world.step(dt, 6, 2);
 
+        // remove bodies
+        Array<Body> bodiesToRemove = wcl.getBodiesToRemove();
+        for(int i = 0; i < bodiesToRemove.size; i++){
+            Body b = bodiesToRemove.get(i);
+            world.destroyBody(b);
+        }
+        bodiesToRemove.clear();
+
         player.update(dt);
 
-        System.out.println("Player: "+player.body.getPosition());
-        //System.out.println("Enemy: " + zombies[i.getX());
-
-        if(player.body.getPosition().y<6) {
+        if(player.isDead()) {
             game.setScreen(new GameOverScreen(game));
         }
-        for(int i = 0; i < zombies.length; i++) {
-            zombies[i].update(dt);
-            if (player.body.getPosition().x - zombies[i].getX() < 6 && player.body.getPosition().x - zombies[i].getX() > -6) {
-                if (player.body.getPosition().x - zombies[i].body.getPosition().x > 0) {
-                    zombies[i].flip(false, false);
-                    if (zombies[i].body.getLinearVelocity().x < 4) {
-                        zombies[i].body.applyLinearImpulse(0.2f, 0, 0, 0, true);
+
+        for(Zombie z: zombies) {
+            z.update(dt);
+            if (player.body.getPosition().x - z.getX() < 6 && player.body.getPosition().x - z.getX() > -6) {
+                if (player.body.getPosition().x - z.body.getPosition().x > 0) {
+                    z.flip(false, false);
+                    if (z.body.getLinearVelocity().x < 4) {
+                        z.body.applyLinearImpulse(0.34f, 0, 0, 0, true);
 
                     }
                 } else {
-                    zombies[i].flip(true, false);
-                    if (zombies[i].body.getLinearVelocity().x > -4) {
-                        zombies[i].body.applyLinearImpulse(-0.2f, 0, 0, 0, true);
+                    z.flip(true, false);
+                    if (z.body.getLinearVelocity().x > -4) {
+                        z.body.applyLinearImpulse(-0.3f, 0, 0, 0, true);
                     }
                 }
             }
         }
-        gamecam.position.x =player.body.getPosition().x;
-        //gamecam.position.x = BigDecimal.valueOf(player.body.getPosition().x).setScale(3,BigDecimal.ROUND_HALF_UP).floatValue();
+        for(Bullet b: bullets){
+            if(b.isDestroyed())
+                bullets.removeValue(b,true);
+            else
+                b.update(dt);
+        }
+
+        gamecam.position.x = player.body.getPosition().x;
         gamecam.position.y = 13;
-        //gamecam.position.y = player.body.getPosition().y+1;
-       // System.out.println("Posicion camara: " + gamecam.position);
+
         gamecam.update();
         renderer.setView(gamecam);
     }
@@ -228,25 +243,10 @@ public class PlayScreen implements Screen {
 
         if(!paused) {
             update(delta);
-            Gdx.gl.glClearColor(0, 0, 0, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            rbg.render(delta);
-            // render del mapa
-            renderer.render();
-
-            // render de Box2DDebugLines
-            //b2dr.render(world, gamecam.combined);
-
             game.batch.setProjectionMatrix(gamecam.combined);
-            game.batch.begin();
-            player.draw(game.batch);
-            for (int i = 0; i < zombies.length; i++) {
-                zombies[i].draw(game.batch);
-            }
-            game.batch.end();
-
             // dibuja la camara del hud
             hud.setFps(Gdx.graphics.getFramesPerSecond());
+            hud.setHp(player.getHp());
             if(player.body.getPosition().x>distance) {
                 distance = (int)player.body.getPosition().x;
                 hud.setDistance(distance-10);
@@ -259,6 +259,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         rbg.render(delta);
+
         // render del mapa
         renderer.render();
 
@@ -266,10 +267,17 @@ public class PlayScreen implements Screen {
         //b2dr.render(world, gamecam.combined);
 
         game.batch.setProjectionMatrix(gamecam.combined);
+
+
         game.batch.begin();
         player.draw(game.batch);
-        for (int i = 0; i < zombies.length; i++) {
-            zombies[i].draw(game.batch);
+        for (Zombie z : zombies) {
+            if (!z.isDestroyed())
+                z.draw(game.batch);
+        }
+        for(Bullet b: bullets){
+            if (!b.isDestroyed())
+                b.draw(game.batch);
         }
         game.batch.end();
 
@@ -277,8 +285,8 @@ public class PlayScreen implements Screen {
         if (Gdx.app.getType() == Application.ApplicationType.Android)
             controller.draw();
 
-        hud.setFps(Gdx.graphics.getFramesPerSecond());
-        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        /*hud.setFps(Gdx.graphics.getFramesPerSecond());
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);*/
         hud.stage.draw();
 
     }
@@ -295,6 +303,10 @@ public class PlayScreen implements Screen {
 
     public World getWorld(){
         return world;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     @Override
