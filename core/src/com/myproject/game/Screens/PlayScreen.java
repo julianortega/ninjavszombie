@@ -77,7 +77,7 @@ public class PlayScreen implements Screen {
     private Label pause_label;
     private int distance;
 
-    public static final long FIRE_RATE = 300000000L;
+    public static final long FIRE_RATE = 3000000L;
     public long lastShot;
 
 
@@ -162,7 +162,7 @@ public class PlayScreen implements Screen {
                 player.body.applyLinearImpulse(new Vector2(0.3f, 0), player.body.getWorldCenter(), true);
             if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && player.body.getLinearVelocity().x >= -7)
                 player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
-            if(Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+            if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
                 if(System.nanoTime() - lastShot >= FIRE_RATE) {
                     bullets.add(new Bullet(this, player.body.getPosition().x, player.body.getPosition().y));
                     lastShot = System.nanoTime();
@@ -188,9 +188,14 @@ public class PlayScreen implements Screen {
 
         // remove bodies
         Array<Body> bodiesToRemove = wcl.getBodiesToRemove();
-        for(int i = 0; i < bodiesToRemove.size; i++){
-            Body b = bodiesToRemove.get(i);
-            world.destroyBody(b);
+        for(Body b : bodiesToRemove){
+            Array<Body> bd = new Array<Body>();
+            world.getBodies(bd);
+
+            if (bd.contains(b, true)) {
+                b.setActive(false);
+                world.destroyBody(b);
+            }
         }
         bodiesToRemove.clear();
 
