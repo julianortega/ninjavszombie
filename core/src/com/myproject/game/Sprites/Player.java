@@ -37,14 +37,15 @@ public class Player extends Sprite {
     private TextureRegion playerStand;
     private Animation<TextureRegion> playerRun, playerJump, playerAttack;
     private float stateTimer;
-    private boolean runningRight;
+    private boolean runningRight, shooting;
     private int hp;
     private Sound jumpSound;
-
+    private Array<Bullet> bullets;
+    private PlayScreen screen;
 
     public Player(PlayScreen screen) {
         AnimationCreator fc = new AnimationCreator(screen);
-
+        this.screen = screen;
         world = screen.getWorld();
         currentState = State.STANDING;
         previousState = State.STANDING;
@@ -55,7 +56,9 @@ public class Player extends Sprite {
         playerAttack = fc.createPlayerAttackAnimation();
         playerStand = fc.createPlayerStandTexture();
         hp = 3;
-      
+        bullets = new Array<Bullet>();
+        shooting = false;
+
         definePlayer();
         setBounds(0, 0, 140 / MainGame.PPM, 140 / MainGame.PPM);
         setRegion(playerStand);
@@ -114,8 +117,12 @@ public class Player extends Sprite {
             return State.FALLING;
         else if(body.getLinearVelocity().x != 0)
             return State.RUNNING;
-        else
-            return State.STANDING;
+        else {
+            if(!shooting && bullets.size==0)
+                return State.STANDING;
+            else
+                return State.ATTACKING;
+        }
     }
 
     public void definePlayer() {
@@ -130,11 +137,7 @@ public class Player extends Sprite {
 
         fixtureDef.filter.categoryBits = MainGame.PLAYER_BIT;
         fixtureDef.filter.maskBits = MainGame.GROUND_BIT |
-                MainGame.BRICK_BIT |
-                MainGame.BULLET_BIT |
-                MainGame.ENEMY_BIT |
-                MainGame.OBJECT_BIT |
-                MainGame.ENEMY_HEAD_BIT;
+                MainGame.ENEMY_BIT;
 
         fixtureDef.shape = shape;
         body.createFixture(fixtureDef).setUserData(this);
@@ -144,8 +147,16 @@ public class Player extends Sprite {
         if ( currentState != State.JUMPING ) {
             body.applyLinearImpulse(new Vector2(0, 6), body.getWorldCenter(), true);
             jumpSound.play();
-            currentState = State.JUMPING;
         }
+    }
+
+    public void shoot(){
+        bullets.add(new Bullet(screen, body.getPosition().x, body.getPosition().y));
+        shooting = true;
+    }
+
+    public void stopShoot(){
+        shooting = false;
     }
 
     public void hit(){
@@ -159,6 +170,9 @@ public class Player extends Sprite {
 
     public int getHp(){
         return hp;
+    }
+    public Array<Bullet> getBullets(){
+        return bullets;
     }
 
 }

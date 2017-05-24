@@ -25,7 +25,7 @@ public class Controller {
     public boolean leftPressed;
     public boolean rightPressed;
     public Image buttonUp;
-    //public Image buttonDown;
+    public Image buttonDown;
     public Image buttonLeft;
     public Image buttonRight;
     public OrthographicCamera camera;
@@ -40,7 +40,7 @@ public class Controller {
 
         //Buttons with images.
         buttonUp = new Image(new Texture("buttonup.png"));
-        buttonUp.setSize(240,240);
+        buttonUp.setSize(220,220);
         buttonUp.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -53,8 +53,8 @@ public class Controller {
                 upPressed = false;
             }
         });
-        /*buttonDown = new Image(new Texture("buttondown.png"));
-        buttonDown.setSize(160,160);
+        buttonDown = new Image(new Texture("buttondown.png"));
+        buttonDown.setSize(200,200);
         buttonDown.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -66,7 +66,7 @@ public class Controller {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 downPressed = false;
             }
-        });*/
+        });
         buttonLeft = new Image(new Texture("buttonleft.png"));
         buttonLeft.setSize(200,200);
         buttonLeft.addListener(new InputListener() {
@@ -104,12 +104,9 @@ public class Controller {
         sticksTable.add(buttonLeft).size(buttonLeft.getWidth(), buttonLeft.getHeight());
         sticksTable.add().size(30,1);
         sticksTable.add(buttonRight).size(buttonRight.getWidth(), buttonRight.getHeight());
-        sticksTable.add().size(Gdx.graphics.getWidth()-buttonLeft.getWidth()-buttonRight.getWidth()-buttonUp.getWidth()-70, 1);
+        sticksTable.add().size(Gdx.graphics.getWidth()-buttonLeft.getWidth()-buttonRight.getWidth()-buttonUp.getWidth()-buttonDown.getWidth()-70, 1);
         sticksTable.add(buttonUp).size(buttonUp.getWidth(), buttonUp.getHeight());
-        //sticksTable.add(buttonDown).size(buttonDown.getWidth(), buttonDown.getHeight());
-
-
-
+        sticksTable.add(buttonDown).size(buttonDown.getWidth(), buttonDown.getHeight());
 
         stage.addActor(sticksTable);
     }

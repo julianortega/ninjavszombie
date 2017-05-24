@@ -67,7 +67,6 @@ public class PlayScreen implements Screen {
     private Zombie[] zombies;
     private int numZombies;
     private float[] zombie_spawns;
-    private Array<Bullet> bullets;
 
     // Musica
     private Music music;
@@ -77,8 +76,10 @@ public class PlayScreen implements Screen {
     private Label pause_label;
     private int distance;
 
-    public static final long FIRE_RATE = 3000000L;
+    public static final long FIRE_RATE = 500000000L;
     public long lastShot;
+
+    private int nmap;
 
 
     public PlayScreen(MainGame game) {
@@ -91,20 +92,12 @@ public class PlayScreen implements Screen {
         wcl = new WorldContactListener();
         hud = new Hud(game.batch);
 
-        Random r = new Random();
-        int map_rand = r.nextInt(2)+1;
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("mapa"+map_rand+".tmx");
-        //renderer = new OrthogonalTiledMapRenderer(map, 1/MainGame.PPM);
-        renderer = new OrthogonalTiledMapRenderer(getMap(), 1/ MainGame.PPM);
-        //gamecam.position.set(gamePort.getWorldWidth() / 2, gamePort.getWorldHeight() / 2, 0);
 
         controller = new Controller(game.batch);
 
         world = new World(new Vector2(0, -9.8f), true);
         b2dr = new Box2DDebugRenderer();
 
-        new B2WorldCreator(this);
 
         player = new Player(this);
 
@@ -127,7 +120,6 @@ public class PlayScreen implements Screen {
         for(int i = 0; i < numZombies; i++)
             zombies[i] = new Zombie(this, zombie_spawns[i], 12+i);
 
-        bullets = new Array<Bullet>();
 
         world.setContactListener(wcl);
         // MUSIC
@@ -164,9 +156,11 @@ public class PlayScreen implements Screen {
                 player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
             if(Gdx.input.isKeyPressed(Input.Keys.Z)) {
                 if(System.nanoTime() - lastShot >= FIRE_RATE) {
-                    bullets.add(new Bullet(this, player.body.getPosition().x, player.body.getPosition().y));
+                    player.shoot();
                     lastShot = System.nanoTime();
                 }
+            }else{
+                player.stopShoot();
             }
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE))
@@ -180,6 +174,14 @@ public class PlayScreen implements Screen {
             player.body.applyLinearImpulse(new Vector2(0.3f, 0), player.body.getWorldCenter(), true);
         if (controller.isLeftPressed() && player.body.getLinearVelocity().x >= -7)
             player.body.applyLinearImpulse(new Vector2(-0.3f, 0), player.body.getWorldCenter(), true);
+        if (controller.isDownPressed()){
+            if(System.nanoTime() - lastShot >= FIRE_RATE) {
+                player.shoot();
+                lastShot = System.nanoTime();
+            }
+        }else{
+            player.stopShoot();
+        }
     }
 
     private void update(float dt){
@@ -202,7 +204,9 @@ public class PlayScreen implements Screen {
         player.update(dt);
 
         if(player.isDead()) {
-            game.setScreen(new GameOverScreen(game));
+            GameOverScreen gos = new GameOverScreen(game);
+            gos.setMap(nmap);
+            game.setScreen(gos);
         }
 
         for(Zombie z: zombies) {
@@ -222,9 +226,9 @@ public class PlayScreen implements Screen {
                 }
             }
         }
-        for(Bullet b: bullets){
+        for(Bullet b: player.getBullets()){
             if(b.isDestroyed())
-                bullets.removeValue(b,true);
+                player.getBullets().removeValue(b,true);
             else
                 b.update(dt);
         }
@@ -280,7 +284,7 @@ public class PlayScreen implements Screen {
             if (!z.isDestroyed())
                 z.draw(game.batch);
         }
-        for(Bullet b: bullets){
+        for(Bullet b: player.getBullets()){
             if (!b.isDestroyed())
                 b.draw(game.batch);
         }
@@ -336,5 +340,13 @@ public class PlayScreen implements Screen {
         world.dispose();
         b2dr.dispose();
         hud.dispose();
+    }
+
+    public void setMap(int nmap){
+        this.nmap = nmap;
+        mapLoader = new TmxMapLoader();
+        map = mapLoader.load("mapa"+(nmap+1)+".tmx");
+        new B2WorldCreator(this);
+        renderer = new OrthogonalTiledMapRenderer(getMap(), 1/ MainGame.PPM);
     }
 }

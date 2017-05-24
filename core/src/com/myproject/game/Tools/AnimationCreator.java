@@ -20,7 +20,7 @@ public class AnimationCreator {
 
 
     public Array<TextureRegion> addFrames(String assetName, int frameCount, int xCoord, int yCoord, int width, int height) {
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < frameCount; i++) {
             TextureAtlas.AtlasRegion atlasRegion = screen.getAtlas()[0].findRegion(assetName);
             TextureRegion textureRegion = new TextureRegion(atlasRegion, i * xCoord, yCoord, width, height);
             frames.add(textureRegion);
@@ -28,8 +28,8 @@ public class AnimationCreator {
         return frames;
     }
 
-    public Animation<TextureRegion> createAnimation() {
-        Animation<TextureRegion> animation = new Animation(0.1f, frames);
+    public Animation<TextureRegion> createAnimation(float speed) {
+        Animation<TextureRegion> animation = new Animation(speed, frames);
         frames.clear();
         return animation;
     }
@@ -37,20 +37,20 @@ public class AnimationCreator {
     public Animation<TextureRegion> createPlayerRunAnimation() {
         addFrames("ninja_run", 5, 363, 0, 364, 458);
         addFrames("ninja_run", 5, 363, 458, 363, 458);
-        return createAnimation();
+        return createAnimation(0.1f);
     }
 
     public Animation<TextureRegion> createPlayerJumpAnimation() {
         addFrames("ninja_jump", 5, 362, 0, 362, 483);
         addFrames("ninja_jump", 5, 362, 483, 362, 483);
-        return createAnimation();
+        return createAnimation(0.1f);
     }
 
 
     public Animation<TextureRegion> createPlayerAttackAnimation() {
-        addFrames("ninja_attack", 3, 536, 0, 536, 495);
-        addFrames("ninja_attack", 3, 0, 495*2, 536, 495);
-        return createAnimation();
+        addFrames("ninja_attack", 5, 380, 0, 380, 450);
+        addFrames("ninja_attack", 5, 380, 451, 380, 450);
+        return createAnimation(0.05f);
     }
 
     public TextureRegion createPlayerStandTexture() {
